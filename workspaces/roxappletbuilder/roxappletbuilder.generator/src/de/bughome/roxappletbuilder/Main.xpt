@@ -1,0 +1,9 @@
+«IMPORT roxappletbuilder»
+
+«REM»
+   This is the 'main' template. 
+   You should replace the type 'Object' with your respective meta type.
+«ENDREM»
+«DEFINE main FOR Object»
+	«EXPAND AppletRunPython::AppletRunPython FOR this»
+«ENDDEFINE»

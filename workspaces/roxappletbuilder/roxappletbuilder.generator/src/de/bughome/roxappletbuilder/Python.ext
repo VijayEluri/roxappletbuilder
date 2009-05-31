@@ -1,0 +1,13 @@
+String multiply(String s, Integer factor):
+	JAVA de.bughome.roxappletbuilder.PythonUtil.multiply(java.lang.String, java.lang.Long);
+
+String getWidgetName(roxappletbuilder::Widget w):
+	let p = w.metaType.getProperty("name") :
+		(p == null) ? "" : p.get(w);
+
+String getWidgetVariableName(roxappletbuilder::Widget w):
+	let p = w.metaType.getProperty("name") :
+		(p == null) ? ("x") : ("self." + p.get(w));
+
+String indent(int indention):
+	multiply(" ", indention);

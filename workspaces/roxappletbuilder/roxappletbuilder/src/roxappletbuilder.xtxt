@@ -1,0 +1,35 @@
+Applet:
+	"applet" "{"
+		name = ID
+	"}"
+	(texts += Text)*
+	(composites += Composite)*
+	"gui" "{"
+		"rootComposite" rootComposite = [Composite|ID]
+	"}";
+	
+Text:
+	"text" name = ID "=" defaultValue = STRING ";";
+
+Composite:
+	"composite" name = ID "{"
+		rootWidget = Widget
+	"}";
+
+Widget:
+	Button;
+	
+Button:
+	"button" (name = ID)? "{"
+		("title" title = [Text|ID])?
+		(handlers += ButtonHandler)*
+	"}";
+
+ButtonHandler:
+	ClickedHandler;
+
+Handler:
+	ClickedHandler;
+
+ClickedHandler:
+	"clicked-handler" "{" "}";

@@ -1,0 +1,84 @@
+«IMPORT roxappletbuilder»
+
+«EXTENSION de::bughome::roxappletbuilder::Python»
+
+«DEFINE AppletRunPython FOR Applet»
+«FILE name + "/AppletRun" -»
+#!/usr/bin/env python
+
+import gtk
+import sys
+
+«FOREACH composites AS c -»
+class «c.name.toFirstUpper()»:
+
+«FOREACH c.eAllContents.typeSelect(Widget) AS w -»
+«IF (w.metaType.getProperty("handlers") != null) -»
+«EXPAND HandlerCallbacks(w) FOREACH w.handlers -»
+«ENDIF -»
+«ENDFOREACH -»
+
+
+    def __setUpGui(self):
+«EXPAND WidgetSetUp(8) FOR c.rootWidget -»
+        self.rootWidget = «c.rootWidget.getWidgetVariableName()»
+
+«ENDFOREACH -»
+    def __init__(self):
+        self.__setUpGui()
+
+if(__name__ == '__main__'):
+    xid = sys.argv[1]
+    
+    p = gtk.Plug(int(xid))
+    p.add(«rootComposite.name»().rootWidget)
+    p.show_all()
+
+    gtk.main()
+
+«ENDFILE»
+«ENDDEFINE»
+
+«REM»************************************************************************
+        WidgetClass
+«ENDREM»
+
+«DEFINE WidgetClass FOR Button»gtk.Button«ENDDEFINE»
+
+«REM»************************************************************************
+        WidgetSetUp
+«ENDREM»
+
+«DEFINE WidgetSetUp(int indention) FOR Widget -»
+«ERROR "Missing WidgetSetup(int) for " + this»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention) FOR Button -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»(«IF (title != null)»'«title.defaultValue»'«ENDIF»)
+«EXPAND HandlerSetUp(8, this) FOREACH handlers -»
+«ENDDEFINE»
+
+«REM»************************************************************************
+        HandlerSetUp
+«ENDREM»
+
+«DEFINE HandlerSetUp(Widget w) FOR Handler -»
+«ERROR "Missing HandlerSetUp for " + this»
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(int indention, Widget w) FOR ClickedHandler -»
+«indent(indention)»«w.getWidgetVariableName()».connect('clicked', self.__«w.getWidgetName().toFirstLower()»ClickedCallback)
+«ENDDEFINE»
+
+«REM»************************************************************************
+        HandlerCallback
+«ENDREM»
+
+«DEFINE HandlerCallbacks(Widget w) FOR Handler -»
+«ERROR "Missing HandlerCallbacks for " + this»
+«ENDDEFINE»
+
+«DEFINE HandlerCallbacks(Widget w) FOR ClickedHandler -»
+    def __«w.getWidgetName().toFirstLower()»ClickedCallback(self, widget):
+        print 'clicked'
+«ENDDEFINE»

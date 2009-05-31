@@ -1,0 +1,17 @@
+<workflow>
+  <property name='modelFile' />
+  <property name='targetDir' value='..'/>
+  <bean class="org.eclipse.mwe.emf.StandaloneSetup">
+     <platformUri value=".."/>
+  </bean>
+  <component file='de/bughome/roxappletbuilder/parser/Parser.oaw'>
+     <modelFile value='${modelFile}'/>
+     <outputSlot value='theModel'/>
+  </component>
+  <!-- <component class='oaw.workflow.common.DirectoryCleaner' directory='${targetDir}'/> -->
+  <component class='oaw.xpand2.Generator'>
+     <metaModel id='mm' class='org.eclipse.m2t.type.emf.EmfRegistryMetaModel'/>
+     <expand value='de::bughome::roxappletbuilder::Main::main FOR theModel'/>
+     <genPath value='${targetDir}'/>
+  </component>
+</workflow>
