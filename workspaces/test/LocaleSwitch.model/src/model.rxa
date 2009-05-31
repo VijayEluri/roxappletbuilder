@@ -1,0 +1,16 @@
+applet {
+	LocaleSwitch
+}
+
+text exit = "Exit";
+
+composite Main {
+	button Switch {
+		title exit
+		clicked-handler { }
+	}
+}
+
+gui {
+	rootComposite Main
+}
