@@ -72,9 +72,9 @@ if(__name__ == '__main__'):
     (options, args) = parser.parse_args()
 
     if(options.standAlone):
-        d = gtk.Dialog()
-        d.add(«rootComposite.name»().rootWidget)
-        d.show_all()
+        w = gtk.Window()
+        w.add(«rootComposite.name»().rootWidget)
+        w.show_all()
     
     else:
         xid = int(args[0])
