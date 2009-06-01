@@ -7,19 +7,55 @@
 #!/usr/bin/env python
 
 import gtk
+import logging
+import optparse
 import sys
 
+def setUpLogging():
+    def tagExceptionCallback(eType, eValue, eTraceBack):
+        import cgitb
+
+        txt = cgitb.text((eType, eValue, eTraceBack))
+
+        logging.fatal(txt)
+    
+        sys.exit(1)
+
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/«name».log', filemode='a')
+
+    # replace default exception handler
+    sys.excepthook = tagExceptionCallback
+
+«FOREACH images AS i -»
+def create«i.name.toFirstUpper()»Image():
+    image = gtk.Image()
+«EXPAND ImagePixBufLoad FOR i.source -»
+«IF (i.width != null) -»
+    pixBuf = pixBuf.scale_simple(«i.width», «i.height», gtk.gdk.INTERP_BILINEAR)
+«ENDIF -»
+    image.set_from_pixbuf(pixBuf)
+    
+    return image
+
+«ENDFOREACH -»
 «FOREACH composites AS c -»
 class «c.name.toFirstUpper()»:
 
 «FOREACH c.eAllContents.typeSelect(Widget) AS w -»
 «IF (w.metaType.getProperty("handlers") != null) -»
 «EXPAND HandlerCallbacks(w) FOREACH w.handlers -»
+
 «ENDIF -»
 «ENDFOREACH -»
-
-
     def __setUpGui(self):
+«FOREACH c.menus AS m -»
+        self.«m.name.toFirstLower()» = gtk.Menu()
+«EXPAND MenuItemSetUp(m) FOREACH m.menuItems -»
+«FOREACH m.menuItems AS i -»
+        «i.getWidgetVariableName()».show_all()
+«ENDFOREACH -»
+        
+«ENDFOREACH -»
 «EXPAND WidgetSetUp(8) FOR c.rootWidget -»
         self.rootWidget = «c.rootWidget.getWidgetVariableName()»
 
@@ -28,11 +64,26 @@ class «c.name.toFirstUpper()»:
         self.__setUpGui()
 
 if(__name__ == '__main__'):
-    xid = sys.argv[1]
+    setUpLogging()
     
-    p = gtk.Plug(int(xid))
-    p.add(«rootComposite.name»().rootWidget)
-    p.show_all()
+    parser = optparse.OptionParser()
+    parser.add_option('-s', '--standalone', dest = 'standAlone', action = 'store_true', help = 'launches the application in standalone mode outside the rox filer panel')
+    
+    (options, args) = parser.parse_args()
+
+    if(options.standAlone):
+        d = gtk.Dialog()
+        d.add(«rootComposite.name»().rootWidget)
+        d.show_all()
+    
+    else:
+        xid = int(args[0])
+    
+        logging.debug('Connecting to XID ' + str(xid))
+    
+        p = gtk.Plug(xid)
+        p.add(«rootComposite.name»().rootWidget)
+        p.show_all()
 
     gtk.main()
 
@@ -46,6 +97,19 @@ if(__name__ == '__main__'):
 «DEFINE WidgetClass FOR Button»gtk.Button«ENDDEFINE»
 
 «REM»************************************************************************
+        MenuItemSetUp
+«ENDREM»
+
+«DEFINE MenuItemSetUp(Widget parent) FOR AbstractMenuItem -»
+«ERROR "Missing MenuItemSetUp for " + this»
+«ENDDEFINE»
+
+«DEFINE MenuItemSetUp(Widget parent) FOR MenuItem -»
+        «getWidgetVariableName()» = gtk.MenuItem(«IF (title != null)»'«title.defaultValue»'«ENDIF»)
+        «parent.getWidgetVariableName()».append(«getWidgetVariableName()»)
+«ENDDEFINE»
+
+«REM»************************************************************************
         WidgetSetUp
 «ENDREM»
 
@@ -54,7 +118,13 @@ if(__name__ == '__main__'):
 «ENDDEFINE»
 
 «DEFINE WidgetSetUp(int indention) FOR Button -»
-«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»(«IF (title != null)»'«title.defaultValue»'«ENDIF»)
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (image != null) -»
+«indent(indention)»«getWidgetVariableName()».set_image(create«image.name.toFirstUpper()»Image())
+«ENDIF -»
+«IF (title != null) -»
+«indent(indention)»«getWidgetVariableName()».set_label('«title.defaultValue»')
+«ENDIF -»
 «EXPAND HandlerSetUp(8, this) FOREACH handlers -»
 «ENDDEFINE»
 
@@ -70,6 +140,10 @@ if(__name__ == '__main__'):
 «indent(indention)»«w.getWidgetVariableName()».connect('clicked', self.__«w.getWidgetName().toFirstLower()»ClickedCallback)
 «ENDDEFINE»
 
+«DEFINE HandlerSetUp(int indention, Widget w) FOR PopupHandler -»
+«indent(indention)»«w.getWidgetVariableName()».connect_object("button-press-event", self.__«w.getWidgetName().toFirstLower()»PopupCallback, «menu.getWidgetVariableName()»)
+«ENDDEFINE»
+
 «REM»************************************************************************
         HandlerCallback
 «ENDREM»
@@ -80,5 +154,27 @@ if(__name__ == '__main__'):
 
 «DEFINE HandlerCallbacks(Widget w) FOR ClickedHandler -»
     def __«w.getWidgetName().toFirstLower()»ClickedCallback(self, widget):
-        print 'clicked'
+        logging.debug('clicked')
+«ENDDEFINE»
+
+«DEFINE HandlerCallbacks(Widget w) FOR PopupHandler -»
+    def __«w.getWidgetName().toFirstLower()»PopupCallback(self, widget, event):
+        if((event.type == gtk.gdk.BUTTON_PRESS) and (event.button == 3)):
+            widget.popup(None, None, None, event.button, event.time)
+            
+            return True
+            
+        return False
+«ENDDEFINE»
+
+«REM»************************************************************************
+        ImagePixBufLoad
+«ENDREM»
+
+«DEFINE ImagePixBufLoad FOR ImageSource -»
+«ERROR "Missing ImagePixBufLoad for " + this»
+«ENDDEFINE»
+
+«DEFINE ImagePixBufLoad FOR ImageSourceFile -»
+    pixBuf = gtk.gdk.pixbuf_new_from_file('«name»')
 «ENDDEFINE»

@@ -1,8 +1,13 @@
 Applet:
-	"applet" "{"
-		name = ID
+	"applet" name = ID "{"
+		"group" group = STRING
 	"}"
-	(texts += Text)*
+	("texts" "{"
+		(texts += Text)*
+	"}")?
+	("images" "{"
+		(images += Image)*
+	"}")?
 	(composites += Composite)*
 	"gui" "{"
 		"rootComposite" rootComposite = [Composite|ID]
@@ -13,23 +18,67 @@ Text:
 
 Composite:
 	"composite" name = ID "{"
+		("menus" "{"
+			(menus += Menu)*
+		"}")?
 		rootWidget = Widget
 	"}";
 
+Image:
+	"image" name = ID "{"
+		source = ImageSource
+		("resize" width = INT "," height = INT)? 
+	"}";
+	
+ImageSource:
+	ImageSourceFile;
+	
+ImageSourceFile:
+	"file" name = STRING;
+
 Widget:
-	Button;
+	AbstractMenuItem | Button | HBox | Menu;
 	
 Button:
 	"button" (name = ID)? "{"
 		("title" title = [Text|ID])?
+		("image" image = [Image|ID])?
 		(handlers += ButtonHandler)*
 	"}";
-
+	
 ButtonHandler:
-	ClickedHandler;
+	ClickedHandler | PopupHandler;
+
+HBox:
+	"hbox" (name = ID)? "{"
+		(homogeneous ?= "homogeneous")?
+		("spacing" spacing = INT)?
+	"}";
+	
+Menu:
+	"menu" name = ID "{"
+		(menuItems += AbstractMenuItem)*
+	"}";
+	
+AbstractMenuItem:
+	ImageMenuItem | MenuItem;
+
+ImageMenuItem:
+	"image-menu-item" (name = ID)? "{"
+	"}";
+	
+MenuItem:
+	"menu-item" (name = ID)? "{"
+		("title" title = [Text|ID])?
+	"}";
 
 Handler:
-	ClickedHandler;
+	ClickedHandler | PopupHandler;
 
 ClickedHandler:
 	"clicked-handler" "{" "}";
+
+PopupHandler:
+	"popup-handler" "{"
+		"menu" menu = [Menu|ID]
+	"}";

@@ -6,7 +6,13 @@ public final class PythonUtil {
 		throw new IllegalStateException();
 	}
 	
-	public static String multiply(final String s, final Long factor){
+    public static String getUID(final Object o){
+        final int uid = System.identityHashCode(o);
+        
+        return Integer.toHexString(uid);
+    }
+
+    public static String multiply(final String s, final Long factor){
 		final int factorInt = factor.intValue();
 		
 		if(factor == 0) return "";

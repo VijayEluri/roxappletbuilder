@@ -1,13 +1,19 @@
+String getUID(Object o):
+	JAVA de.bughome.roxappletbuilder.PythonUtil.getUID(java.lang.Object);
+	
 String multiply(String s, Integer factor):
 	JAVA de.bughome.roxappletbuilder.PythonUtil.multiply(java.lang.String, java.lang.Long);
 
+String getGenericWidgetName(roxappletbuilder::Widget w):
+	w.metaType.name.replaceAll(".*::", "");
+
 String getWidgetName(roxappletbuilder::Widget w):
 	let p = w.metaType.getProperty("name") :
-		(p == null) ? "" : p.get(w);
+		(p == null) ? w.getGenericWidgetName() : ((p.get(w) == null) ? w.getGenericWidgetName() : p.get(w));
 
 String getWidgetVariableName(roxappletbuilder::Widget w):
 	let p = w.metaType.getProperty("name") :
-		(p == null) ? ("x") : ("self." + p.get(w));
+		((p == null) ? (w.getGenericWidgetName() + getUID(w)) : ((p.get(w) == null) ? (w.getGenericWidgetName() + getUID(w)) : ("self." + p.get(w).toString().toFirstLower()))).toFirstLower();
 
 String indent(int indention):
 	multiply(" ", indention);
