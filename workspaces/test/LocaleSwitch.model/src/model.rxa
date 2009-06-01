@@ -1,13 +1,33 @@
-applet {
-	LocaleSwitch
+applet LocaleSwitch {
+	group "de.bughome.python.locale_switch"
 }
 
-text exit = "Exit";
+texts {
+	text context_menu_exit = "Exit";
+	text exit = "Exit";
+}
+
+images {
+	image FlagGermany {
+		file "/home/marook/work/images/icons/Flag_of_Germany.svg"
+		resize 45, 28
+	}
+}
 
 composite Main {
+	menus {
+		menu Context {
+			menu-item {
+				title context_menu_exit
+			}
+		}
+	}
+
 	button Switch {
 		title exit
-		clicked-handler { }
+		image FlagGermany
+		//clicked-handler { }
+		popup-handler { menu Context }
 	}
 }
 
