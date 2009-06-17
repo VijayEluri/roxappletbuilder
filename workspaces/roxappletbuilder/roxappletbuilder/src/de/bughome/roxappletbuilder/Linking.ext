@@ -1,0 +1,9 @@
+import roxappletbuilder;
+
+extension de::bughome::roxappletbuilder::Extensions;
+extension de::bughome::roxappletbuilder::GenLinking reexport;
+
+/*
+ * If you need more sophisticated linking semantic just overwrite the linking extensions here and add your own logic.
+ * Have a look at the generated de::bughome::roxappletbuilder::GenLinking (typically located in src-gen)
+ */

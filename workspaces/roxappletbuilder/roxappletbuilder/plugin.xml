@@ -1,0 +1,12 @@
+<plugin>
+   
+   
+   
+   <extension
+         point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+            class="de.bughome.roxappletbuilder.resource.roxappletbuilderResourceFactory"
+            type="rxa">
+      </parser>
+   </extension>
+</plugin>

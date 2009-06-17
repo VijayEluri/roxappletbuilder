@@ -1,0 +1,23 @@
+import roxappletbuilder;
+
+extension de::bughome::roxappletbuilder::Extensions;
+/*
+ * This check file is used by the parser
+ * and by the editor. Add your constraints here!
+ */
+
+context Button ERROR "Write your constraint message here...!" :
+   true;
+
+context Widget ERROR "Write your constraint message here...!" :
+   true;
+
+context Composite ERROR "Write your constraint message here...!" :
+   true;
+
+context Applet ERROR "Write your constraint message here...!" :
+   true;
+
+context Text ERROR "Write your constraint message here...!" :
+   true;
+
