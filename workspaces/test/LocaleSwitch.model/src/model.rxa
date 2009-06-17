@@ -14,6 +14,10 @@ images {
 	}
 }
 
+model Model {
+	attribute keyboardLayout = "None";
+}
+
 composite Main {
 	menus {
 		menu Context {
@@ -28,6 +32,7 @@ composite Main {
 		image FlagGermany
 		//clicked-handler { }
 		popup-handler { menu Context }
+		model-change-handler { attribute keyboardLayout }
 	}
 }
 
