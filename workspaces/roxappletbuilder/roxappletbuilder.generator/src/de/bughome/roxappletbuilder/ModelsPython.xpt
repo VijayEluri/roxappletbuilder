@@ -1,0 +1,35 @@
+«IMPORT roxappletbuilder»
+
+«EXTENSION de::bughome::roxappletbuilder::Python»
+
+«DEFINE ModelsPython FOR Applet»
+«EXPAND PackagePython::PackagePython(name, group) FOR this»
+«FILE name + "/" + group.replaceAll("[.]", "/") + "/models.py" GEN -»
+«FOREACH models AS m -»
+class «m.name.toFirstUpper()»:
+
+    def __init__(self):
+«FOREACH m.attributes AS a -»
+        self.__«a.name.toFirstLower()» = «a.defaultValue»
+        self.«a.name.toFirstLower()»ChangeListeners = []
+«ENDFOREACH -»
+
+«FOREACH m.attributes AS a -»
+    def get«a.name.toFirstUpper()»(self):
+        return self.__«a.name.toFirstLower()»
+        
+    def set«a.name.toFirstUpper()»(self, value):
+        if(self.__«a.name.toFirstLower()» == value):
+            return
+    
+        oldValue = self.__«a.name.toFirstLower()»
+        self.__«a.name.toFirstLower()» = value
+        for listener in self.«a.name.toFirstLower()»ChangeListeners:
+            listener(self, oldValue, value)
+
+    «a.name.toFirstLower()» = property(get«a.name.toFirstUpper()», set«a.name.toFirstUpper()»)
+
+«ENDFOREACH -»
+«ENDFOREACH -»
+«ENDFILE»
+«ENDDEFINE»

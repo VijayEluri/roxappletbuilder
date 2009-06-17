@@ -1,0 +1,11 @@
+«IMPORT roxappletbuilder»
+
+«EXTENSION de::bughome::roxappletbuilder::Python»
+
+«DEFINE PackagePython(String basePath, String package) FOR Object»
+«FOREACH getPackages(package) AS p»
+«FILE basePath + "/" + p.replaceAll("[.]", "/") + "/__init__.py" GEN -»
+«ENDFILE»
+«ENDFOREACH»
+«ENDDEFINE»
+

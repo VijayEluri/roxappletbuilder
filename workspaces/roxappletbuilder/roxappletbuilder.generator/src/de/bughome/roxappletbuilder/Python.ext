@@ -17,3 +17,6 @@ String getWidgetVariableName(roxappletbuilder::Widget w):
 
 String indent(int indention):
 	multiply(" ", indention);
+
+List getPackages(String package):
+	JAVA de.bughome.roxappletbuilder.PythonUtil.getPackages(java.lang.String);

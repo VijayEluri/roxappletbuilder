@@ -3,13 +3,19 @@
 «EXTENSION de::bughome::roxappletbuilder::Python»
 
 «DEFINE AppletRunPython FOR Applet»
-«FILE name + "/AppletRun" -»
+«FILE name + "/AppletRun" GEN -»
 #!/usr/bin/env python
 
 import gtk
 import logging
 import optparse
 import sys
+import «group».callbacks
+import «group».models
+
+«FOREACH models AS m -»
+«m.name.toFirstLower()» = «group».models.«m.name»() 
+«ENDFOREACH -»
 
 def setUpLogging():
     def tagExceptionCallback(eType, eValue, eTraceBack):
@@ -56,7 +62,7 @@ class «c.name.toFirstUpper()»:
 «ENDFOREACH -»
         
 «ENDFOREACH -»
-«EXPAND WidgetSetUp(8) FOR c.rootWidget -»
+«EXPAND WidgetSetUp(8, this) FOR c.rootWidget -»
         self.rootWidget = «c.rootWidget.getWidgetVariableName()»
 
 «ENDFOREACH -»
@@ -113,11 +119,11 @@ if(__name__ == '__main__'):
         WidgetSetUp
 «ENDREM»
 
-«DEFINE WidgetSetUp(int indention) FOR Widget -»
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR Widget -»
 «ERROR "Missing WidgetSetup(int) for " + this»
 «ENDDEFINE»
 
-«DEFINE WidgetSetUp(int indention) FOR Button -»
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR Button -»
 «indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
 «IF (image != null) -»
 «indent(indention)»«getWidgetVariableName()».set_image(create«image.name.toFirstUpper()»Image())
@@ -125,23 +131,32 @@ if(__name__ == '__main__'):
 «IF (title != null) -»
 «indent(indention)»«getWidgetVariableName()».set_label('«title.defaultValue»')
 «ENDIF -»
-«EXPAND HandlerSetUp(8, this) FOREACH handlers -»
+«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «REM»************************************************************************
         HandlerSetUp
 «ENDREM»
 
-«DEFINE HandlerSetUp(Widget w) FOR Handler -»
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR Object -»
 «ERROR "Missing HandlerSetUp for " + this»
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(int indention, Widget w) FOR ClickedHandler -»
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ClickedHandler -»
 «indent(indention)»«w.getWidgetVariableName()».connect('clicked', self.__«w.getWidgetName().toFirstLower()»ClickedCallback)
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(int indention, Widget w) FOR PopupHandler -»
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR PopupHandler -»
 «indent(indention)»«w.getWidgetVariableName()».connect_object("button-press-event", self.__«w.getWidgetName().toFirstLower()»PopupCallback, «menu.getWidgetVariableName()»)
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ModelChangeHandler -»
+«FOREACH attributes AS a -»
+«indent(indention)»def «a.name.toFirstLower()»ChangeListener(model, oldValue, newValue):
+«indent(indention)»    «applet.group».callbacks.on«w.name.toFirstUpper()»Update(«w.getWidgetVariableName()», model, oldValue, newValue)
+«indent(indention)»«applet.group».callbacks.on«w.name.toFirstUpper()»Update(«w.getWidgetVariableName()», «a.eContainer.name.toFirstLower()», None, «a.eContainer.name.toFirstLower()».«a.name.toFirstLower()»)
+«indent(indention)»«a.eContainer.name.toFirstLower()».«a.name.toFirstLower()»ChangeListeners.append(«a.name.toFirstLower()»ChangeListener)
+«ENDFOREACH -»
 «ENDDEFINE»
 
 «REM»************************************************************************

@@ -8,6 +8,7 @@ Applet:
 	("images" "{"
 		(images += Image)*
 	"}")?
+	(models += Model)*
 	(composites += Composite)*
 	"gui" "{"
 		"rootComposite" rootComposite = [Composite|ID]
@@ -15,6 +16,14 @@ Applet:
 	
 Text:
 	"text" name = ID "=" defaultValue = STRING ";";
+
+Model:
+	"model" name = ID "{"
+		(attributes += ModelAttribute)*
+	"}";
+
+ModelAttribute:
+	"attribute" name = ID "=" defaultValue = STRING ";";
 
 Composite:
 	"composite" name = ID "{"
@@ -47,7 +56,7 @@ Button:
 	"}";
 	
 ButtonHandler:
-	ClickedHandler | PopupHandler;
+	ClickedHandler | ModelChangeHandler | PopupHandler;
 
 HBox:
 	"hbox" (name = ID)? "{"
@@ -73,10 +82,15 @@ MenuItem:
 	"}";
 
 Handler:
-	ClickedHandler | PopupHandler;
+	ClickedHandler | ModelChangeHandler | PopupHandler;
 
 ClickedHandler:
 	"clicked-handler" "{" "}";
+
+ModelChangeHandler:
+	"model-change-handler" "{"
+		("attribute" attributes += [ModelAttribute|ID])*
+	"}";
 
 PopupHandler:
 	"popup-handler" "{"

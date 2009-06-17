@@ -10,8 +10,12 @@
   </component>
   <!-- <component class='oaw.workflow.common.DirectoryCleaner' directory='${targetDir}'/> -->
   <component class='oaw.xpand2.Generator'>
-     <metaModel id='mm' class='org.eclipse.m2t.type.emf.EmfRegistryMetaModel'/>
-     <expand value='de::bughome::roxappletbuilder::Main::main FOR theModel'/>
-     <genPath value='${targetDir}'/>
+    <metaModel id='mm' class='org.eclipse.m2t.type.emf.EmfRegistryMetaModel'/>
+    <expand value='de::bughome::roxappletbuilder::Main::main FOR theModel'/>
+
+	<outlet name="GEN" path="${targetDir}">
+		<vetoStrategy class="oaw.xpand2.output.NoChangesVetoStrategy"/>
+	</outlet>
+	<outlet name="EDIT" path="${targetDir}" overwrite="false" />
   </component>
 </workflow>

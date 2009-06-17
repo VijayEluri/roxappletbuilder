@@ -5,5 +5,15 @@
    You should replace the type 'Object' with your respective meta type.
 «ENDREM»
 «DEFINE main FOR Object»
+	«EXPAND Applet FOR this»
+«ENDDEFINE»
+
+«DEFINE Applet FOR Object»
+	«ERROR "Can't extract Applet for " + this»
+«ENDDEFINE»
+
+«DEFINE Applet FOR Applet»
 	«EXPAND AppletRunPython::AppletRunPython FOR this»
+	«EXPAND CallbacksPython::CallbacksPython FOR this»
+	«EXPAND ModelsPython::ModelsPython FOR this»
 «ENDDEFINE»

@@ -1,0 +1,9 @@
+«IMPORT roxappletbuilder»
+
+«EXTENSION de::bughome::roxappletbuilder::Python»
+
+«DEFINE CallbacksPython FOR Applet»
+«FILE name + "/" + group.replaceAll("[.]", "/") + "/callbacks.py" EDIT -»
+# implement your custom callback methods here
+«ENDFILE»
+«ENDDEFINE»
