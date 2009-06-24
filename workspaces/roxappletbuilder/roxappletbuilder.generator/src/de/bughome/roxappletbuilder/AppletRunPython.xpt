@@ -22,7 +22,16 @@ def setUpLogging():
     
         sys.exit(1)
 
+	# configure file logger
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/«name».log', filemode='a')
+    
+    # configure console logger
+    consoleHandler = logging.StreamHandler(sys.stdout)
+    consoleHandler.setLevel(logging.DEBUG)
+    
+    consoleFormatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    consoleHandler.setFormatter(consoleFormatter)
+    logging.getLogger().addHandler(consoleHandler)
 
     # replace default exception handler
     sys.excepthook = tagExceptionCallback
