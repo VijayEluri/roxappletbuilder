@@ -46,7 +46,7 @@ ImageSourceFile:
 	"file" name = STRING ";";
 
 Widget:
-	AbstractMenuItem | Button | HBox | Menu;
+	AbstractMenuItem | Button | HBox | Menu | VBox;
 	
 Button:
 	"button" (name = ID)? "{"
@@ -68,6 +68,13 @@ HBox:
 Menu:
 	"menu" name = ID "{"
 		(menuItems += AbstractMenuItem)*
+	"}";
+	
+VBox:
+	"vbox" (name = ID)? "{"
+		(homogeneous ?= "homogeneous")?
+		("spacing" spacing = INT ";")?
+		(widgets += Widget)*
 	"}";
 	
 AbstractMenuItem:

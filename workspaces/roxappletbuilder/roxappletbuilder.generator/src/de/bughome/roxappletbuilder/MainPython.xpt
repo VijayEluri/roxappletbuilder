@@ -60,6 +60,7 @@ class «c.name.toFirstUpper()»:
 
 «DEFINE WidgetClass FOR Button»gtk.Button«ENDDEFINE»
 «DEFINE WidgetClass FOR HBox»gtk.HBox«ENDDEFINE»
+«DEFINE WidgetClass FOR VBox»gtk.VBox«ENDDEFINE»
 
 «REM»************************************************************************
         MenuItemSetUp
@@ -94,6 +95,20 @@ class «c.name.toFirstUpper()»:
 «ENDDEFINE»
 
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR HBox -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (homogeneous) -»
+«indent(indention)»«getWidgetVariableName()».homogeneous = True
+«ENDIF -»
+«IF (spacing != null) -»
+«indent(indention)»«getWidgetVariableName()».spacing = «spacing»
+«ENDIF -»
+«FOREACH widgets AS w -»
+«EXPAND WidgetSetUp(indention, applet) FOR w -»
+«indent(indention)»«getWidgetVariableName()».add(«w.getWidgetVariableName()»)
+«ENDFOREACH -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR VBox -»
 «indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
 «IF (homogeneous) -»
 «indent(indention)»«getWidgetVariableName()».homogeneous = True
