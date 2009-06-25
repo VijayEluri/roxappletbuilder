@@ -15,6 +15,7 @@
 «DEFINE Applet FOR Applet»
 	«EXPAND AppletRunPython::AppletRunPython FOR this»
 	«EXPAND CallbacksPython::CallbacksPython FOR this»
+	«EXPAND ImagesPython::ImagesPython FOR this»
 	«EXPAND MainPython::MainPython FOR this»
 	«EXPAND ModelsPython::ModelsPython FOR this»
 «ENDDEFINE»

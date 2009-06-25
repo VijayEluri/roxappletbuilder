@@ -1,0 +1,35 @@
+«IMPORT roxappletbuilder»
+
+«EXTENSION de::bughome::roxappletbuilder::Python»
+
+«DEFINE ImagesPython FOR Applet»
+«EXPAND PackagePython::PackagePython(name, group) FOR this»
+«FILE name + "/" + group.replaceAll("[.]", "/") + "/images.py" GEN -»
+import gtk
+
+«FOREACH images AS i -»
+def create«i.name.toFirstUpper()»Image():
+    image = gtk.Image()
+«EXPAND ImagePixBufLoad FOR i.source -»
+«IF (i.width != null) -»
+    pixBuf = pixBuf.scale_simple(«i.width», «i.height», gtk.gdk.INTERP_BILINEAR)
+«ENDIF -»
+    image.set_from_pixbuf(pixBuf)
+    
+    return image
+
+«ENDFOREACH -»
+«ENDFILE»
+«ENDDEFINE»
+
+«REM»************************************************************************
+        ImagePixBufLoad
+«ENDREM»
+
+«DEFINE ImagePixBufLoad FOR ImageSource -»
+«ERROR "Missing ImagePixBufLoad for " + this»
+«ENDDEFINE»
+
+«DEFINE ImagePixBufLoad FOR ImageSourceFile -»
+    pixBuf = gtk.gdk.pixbuf_new_from_file('«name»')
+«ENDDEFINE»

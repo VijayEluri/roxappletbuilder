@@ -31,5 +31,8 @@ class «m.name.toFirstUpper()»(object):
 
 «ENDFOREACH -»
 «ENDFOREACH -»
+«FOREACH models AS m -»
+«m.name.toFirstLower()» = «m.name»()
+«ENDFOREACH -»
 «ENDFILE»
 «ENDDEFINE»

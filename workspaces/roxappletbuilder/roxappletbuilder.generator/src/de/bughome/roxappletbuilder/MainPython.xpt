@@ -9,24 +9,9 @@
 import gtk
 import logging
 import «group».callbacks
+import «group».images
 import «group».models
 
-«FOREACH models AS m -»
-«m.name.toFirstLower()» = «group».models.«m.name»()
-«ENDFOREACH -»
-
-«FOREACH images AS i -»
-def create«i.name.toFirstUpper()»Image():
-    image = gtk.Image()
-«EXPAND ImagePixBufLoad FOR i.source -»
-«IF (i.width != null) -»
-    pixBuf = pixBuf.scale_simple(«i.width», «i.height», gtk.gdk.INTERP_BILINEAR)
-«ENDIF -»
-    image.set_from_pixbuf(pixBuf)
-    
-    return image
-
-«ENDFOREACH -»
 «FOREACH composites AS c -»
 class «c.name.toFirstUpper()»:
 
@@ -87,7 +72,7 @@ class «c.name.toFirstUpper()»:
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR Button -»
 «indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
 «IF (image != null) -»
-«indent(indention)»«getWidgetVariableName()».set_image(create«image.name.toFirstUpper()»Image())
+«indent(indention)»«getWidgetVariableName()».set_image(«applet.group».images.create«image.name.toFirstUpper()»Image())
 «ENDIF -»
 «IF (title != null) -»
 «indent(indention)»«getWidgetVariableName()».set_label('«title.defaultValue»')
@@ -98,10 +83,10 @@ class «c.name.toFirstUpper()»:
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR HBox -»
 «indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
 «IF (homogeneous) -»
-«indent(indention)»«getWidgetVariableName()».homogeneous = True
+«indent(indention)»«getWidgetVariableName()».set_homogeneous(True)
 «ENDIF -»
 «IF (spacing != null) -»
-«indent(indention)»«getWidgetVariableName()».spacing = «spacing»
+«indent(indention)»«getWidgetVariableName()».set_spacing(«spacing»)
 «ENDIF -»
 «FOREACH widgets AS w -»
 «EXPAND WidgetSetUp(indention, applet) FOR w -»
@@ -112,13 +97,13 @@ class «c.name.toFirstUpper()»:
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR Label -»
 «indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
 «IF (angle != null) -»
-«indent(indention)»«getWidgetVariableName()».angle = «angle»
+«indent(indention)»«getWidgetVariableName()».set_angle(«angle»)
 «ENDIF -»
 «IF (label != null) -»
-«indent(indention)»«getWidgetVariableName()».label = '«label.defaultValue»'
+«indent(indention)»«getWidgetVariableName()».set_label('«label.defaultValue»')
 «ENDIF -»
 «IF (wrap) -»
-«indent(indention)»«getWidgetVariableName()».wrap = True
+«indent(indention)»«getWidgetVariableName()».set_wrap(True)
 «ENDIF -»
 «EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
 «ENDDEFINE»
@@ -126,10 +111,10 @@ class «c.name.toFirstUpper()»:
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR VBox -»
 «indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
 «IF (homogeneous) -»
-«indent(indention)»«getWidgetVariableName()».homogeneous = True
+«indent(indention)»«getWidgetVariableName()».set_homogeneous(True)
 «ENDIF -»
 «IF (spacing != null) -»
-«indent(indention)»«getWidgetVariableName()».spacing = «spacing»
+«indent(indention)»«getWidgetVariableName()».set_spacing(«spacing»)
 «ENDIF -»
 «FOREACH widgets AS w -»
 «EXPAND WidgetSetUp(indention, applet) FOR w -»
@@ -157,8 +142,8 @@ class «c.name.toFirstUpper()»:
 «FOREACH attributes AS a -»
 «indent(indention)»def «a.name.toFirstLower()»ChangeListener(model, oldValue, newValue):
 «indent(indention)»    «applet.group».callbacks.on«w.name.toFirstUpper()»Update(«w.getWidgetVariableName()», model, oldValue, newValue)
-«indent(indention)»«applet.group».callbacks.on«w.name.toFirstUpper()»Update(«w.getWidgetVariableName()», «a.eContainer.name.toFirstLower()», None, «a.eContainer.name.toFirstLower()».«a.name.toFirstLower()»)
-«indent(indention)»«a.eContainer.name.toFirstLower()».«a.name.toFirstLower()»ChangeListeners.append(«a.name.toFirstLower()»ChangeListener)
+«indent(indention)»«applet.group».callbacks.on«w.name.toFirstUpper()»Update(«w.getWidgetVariableName()», «applet.group».models.«a.eContainer.name.toFirstLower()», None, «applet.group».models.«a.eContainer.name.toFirstLower()».«a.name.toFirstLower()»)
+«indent(indention)»«applet.group».models.«a.eContainer.name.toFirstLower()».«a.name.toFirstLower()»ChangeListeners.append(«a.name.toFirstLower()»ChangeListener)
 «ENDFOREACH -»
 «ENDDEFINE»
 
@@ -188,16 +173,4 @@ class «c.name.toFirstUpper()»:
             
         return False
 
-«ENDDEFINE»
-
-«REM»************************************************************************
-        ImagePixBufLoad
-«ENDREM»
-
-«DEFINE ImagePixBufLoad FOR ImageSource -»
-«ERROR "Missing ImagePixBufLoad for " + this»
-«ENDDEFINE»
-
-«DEFINE ImagePixBufLoad FOR ImageSourceFile -»
-    pixBuf = gtk.gdk.pixbuf_new_from_file('«name»')
 «ENDDEFINE»
