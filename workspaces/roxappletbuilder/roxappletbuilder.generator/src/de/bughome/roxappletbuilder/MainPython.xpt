@@ -60,6 +60,7 @@ class «c.name.toFirstUpper()»:
 
 «DEFINE WidgetClass FOR Button»gtk.Button«ENDDEFINE»
 «DEFINE WidgetClass FOR HBox»gtk.HBox«ENDDEFINE»
+«DEFINE WidgetClass FOR Label»gtk.Label«ENDDEFINE»
 «DEFINE WidgetClass FOR VBox»gtk.VBox«ENDDEFINE»
 
 «REM»************************************************************************
@@ -106,6 +107,20 @@ class «c.name.toFirstUpper()»:
 «EXPAND WidgetSetUp(indention, applet) FOR w -»
 «indent(indention)»«getWidgetVariableName()».add(«w.getWidgetVariableName()»)
 «ENDFOREACH -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR Label -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (angle != null) -»
+«indent(indention)»«getWidgetVariableName()».angle = «angle»
+«ENDIF -»
+«IF (label != null) -»
+«indent(indention)»«getWidgetVariableName()».label = '«label.defaultValue»'
+«ENDIF -»
+«IF (wrap) -»
+«indent(indention)»«getWidgetVariableName()».wrap = True
+«ENDIF -»
+«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR VBox -»

@@ -36,7 +36,7 @@ Composite:
 Image:
 	"image" name = ID "{"
 		source = ImageSource
-		("resize" width = INT "," height = INT)? 
+		("resize" width = INT "," height = INT ";")? 
 	"}";
 	
 ImageSource:
@@ -46,7 +46,7 @@ ImageSourceFile:
 	"file" name = STRING ";";
 
 Widget:
-	AbstractMenuItem | Button | HBox | Menu | VBox;
+	AbstractMenuItem | Button | HBox | Label | Menu | VBox;
 	
 Button:
 	"button" (name = ID)? "{"
@@ -65,6 +65,17 @@ HBox:
 		(widgets += Widget)*
 	"}";
 	
+Label:
+	"label" (name = ID)? "{"
+		(wrap ?= "wrap")?
+		("angle" angle = INT ";")?
+		("label" label = [Text|ID] ";")?
+		(handlers += LabelHandler)*
+	"}";
+	
+LabelHandler:
+	ClickedHandler | ModelChangeHandler | PopupHandler;
+
 Menu:
 	"menu" name = ID "{"
 		(menuItems += AbstractMenuItem)*
