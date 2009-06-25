@@ -43,15 +43,15 @@ ImageSource:
 	ImageSourceFile;
 	
 ImageSourceFile:
-	"file" name = STRING;
+	"file" name = STRING ";";
 
 Widget:
 	AbstractMenuItem | Button | HBox | Menu;
 	
 Button:
 	"button" (name = ID)? "{"
-		("title" title = [Text|ID])?
-		("image" image = [Image|ID])?
+		("title" title = [Text|ID] ";")?
+		("image" image = [Image|ID] ";")?
 		(handlers += ButtonHandler)*
 	"}";
 	
@@ -61,7 +61,8 @@ ButtonHandler:
 HBox:
 	"hbox" (name = ID)? "{"
 		(homogeneous ?= "homogeneous")?
-		("spacing" spacing = INT)?
+		("spacing" spacing = INT ";")?
+		(widgets += Widget)*
 	"}";
 	
 Menu:
@@ -78,7 +79,7 @@ ImageMenuItem:
 	
 MenuItem:
 	"menu-item" (name = ID)? "{"
-		("title" title = [Text|ID])?
+		("title" title = [Text|ID] ";")?
 	"}";
 
 Handler:
@@ -89,10 +90,10 @@ ClickedHandler:
 
 ModelChangeHandler:
 	"model-change-handler" "{"
-		("attribute" attributes += [ModelAttribute|ID])*
+		("attribute" attributes += [ModelAttribute|ID] ";")*
 	"}";
 
 PopupHandler:
 	"popup-handler" "{"
-		"menu" menu = [Menu|ID]
+		"menu" menu = [Menu|ID] ";"
 	"}";
