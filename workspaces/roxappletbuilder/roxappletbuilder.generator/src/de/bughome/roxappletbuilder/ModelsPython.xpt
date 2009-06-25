@@ -6,7 +6,7 @@
 «EXPAND PackagePython::PackagePython(name, group) FOR this»
 «FILE name + "/" + group.replaceAll("[.]", "/") + "/models.py" GEN -»
 «FOREACH models AS m -»
-class «m.name.toFirstUpper()»:
+class «m.name.toFirstUpper()»(object):
 
     def __init__(self):
 «FOREACH m.attributes AS a -»

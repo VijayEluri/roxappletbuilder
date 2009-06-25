@@ -32,7 +32,7 @@ class «c.name.toFirstUpper()»:
 
 «FOREACH c.eAllContents.typeSelect(Widget) AS w -»
 «IF (w.metaType.getProperty("handlers") != null) -»
-«EXPAND HandlerCallbacks(w) FOREACH w.handlers -»
+«EXPAND HandlerCallbacks(this, w) FOREACH w.handlers -»
 
 «ENDIF -»
 «ENDFOREACH -»
@@ -121,16 +121,20 @@ class «c.name.toFirstUpper()»:
         HandlerCallback
 «ENDREM»
 
-«DEFINE HandlerCallbacks(Widget w) FOR Handler -»
-«ERROR "Missing HandlerCallbacks for " + this»
+«DEFINE HandlerCallbacks(Applet applet, Widget w) FOR Handler -»
+«ERROR "Missing HandlerCallbacks(Applet, Widget) for " + this»
 «ENDDEFINE»
 
-«DEFINE HandlerCallbacks(Widget w) FOR ClickedHandler -»
+«DEFINE HandlerCallbacks(Applet applet, Widget w) FOR ClickedHandler -»
     def __«w.getWidgetName().toFirstLower()»ClickedCallback(self, widget):
-        logging.debug('clicked')
+        «applet.group».callbacks.on«w.name.toFirstUpper()»Clicked(widget)
+
 «ENDDEFINE»
 
-«DEFINE HandlerCallbacks(Widget w) FOR PopupHandler -»
+«DEFINE HandlerCallbacks(Applet applet, Widget w) FOR ModelChangeHandler -»
+«ENDDEFINE»
+
+«DEFINE HandlerCallbacks(Applet applet, Widget w) FOR PopupHandler -»
     def __«w.getWidgetName().toFirstLower()»PopupCallback(self, widget, event):
         if((event.type == gtk.gdk.BUTTON_PRESS) and (event.button == 3)):
             widget.popup(None, None, None, event.button, event.time)
@@ -138,6 +142,7 @@ class «c.name.toFirstUpper()»:
             return True
             
         return False
+
 «ENDDEFINE»
 
 «REM»************************************************************************
