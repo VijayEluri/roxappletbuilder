@@ -98,10 +98,17 @@ ImageMenuItem:
 MenuItem:
 	"menu-item" (name = ID)? "{"
 		("title" title = [Text|ID] ";")?
+		(handlers += MenuItemHandler)*
 	"}";
+	
+MenuItemHandler:
+	ActivatedHandler;
 
 Handler:
-	ClickedHandler | ModelChangeHandler | PopupHandler;
+	ActivatedHandler | ClickedHandler | ModelChangeHandler | PopupHandler;
+
+ActivatedHandler:
+	"activated-handler" "{" "}";
 
 ClickedHandler:
 	"clicked-handler" "{" "}";

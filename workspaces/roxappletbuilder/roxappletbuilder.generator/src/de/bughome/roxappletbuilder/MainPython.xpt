@@ -24,7 +24,7 @@ class «c.name.toFirstUpper()»:
     def __setUpGui(self):
 «FOREACH c.menus AS m -»
         self.«m.name.toFirstLower()» = gtk.Menu()
-«EXPAND MenuItemSetUp(m) FOREACH m.menuItems -»
+«EXPAND MenuItemSetUp(this, m) FOREACH m.menuItems -»
 «FOREACH m.menuItems AS i -»
         «i.getWidgetVariableName()».show_all()
 «ENDFOREACH -»
@@ -52,13 +52,14 @@ class «c.name.toFirstUpper()»:
         MenuItemSetUp
 «ENDREM»
 
-«DEFINE MenuItemSetUp(Widget parent) FOR AbstractMenuItem -»
-«ERROR "Missing MenuItemSetUp for " + this»
+«DEFINE MenuItemSetUp(Applet applet, Widget parent) FOR AbstractMenuItem -»
+«ERROR "Missing MenuItemSetUp(Applet, Widget) for " + this»
 «ENDDEFINE»
 
-«DEFINE MenuItemSetUp(Widget parent) FOR MenuItem -»
+«DEFINE MenuItemSetUp(Applet applet, Widget parent) FOR MenuItem -»
         «getWidgetVariableName()» = gtk.MenuItem(«IF (title != null)»'«title.defaultValue»'«ENDIF»)
         «parent.getWidgetVariableName()».append(«getWidgetVariableName()»)
+«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «REM»************************************************************************
@@ -130,6 +131,10 @@ class «c.name.toFirstUpper()»:
 «ERROR "Missing HandlerSetUp for " + this»
 «ENDDEFINE»
 
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ActivatedHandler -»
+«indent(indention)»«w.getWidgetVariableName()».connect('activate', self.__«w.getWidgetName().toFirstLower()»ActivatedCallback)
+«ENDDEFINE»
+
 «DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ClickedHandler -»
 «indent(indention)»«w.getWidgetVariableName()».connect('clicked', self.__«w.getWidgetName().toFirstLower()»ClickedCallback)
 «ENDDEFINE»
@@ -153,6 +158,12 @@ class «c.name.toFirstUpper()»:
 
 «DEFINE HandlerCallbacks(Applet applet, Widget w) FOR Handler -»
 «ERROR "Missing HandlerCallbacks(Applet, Widget) for " + this»
+«ENDDEFINE»
+
+«DEFINE HandlerCallbacks(Applet applet, Widget w) FOR ActivatedHandler -»
+    def __«w.getWidgetName().toFirstLower()»ActivatedCallback(self, widget):
+        «applet.group».callbacks.on«w.name.toFirstUpper()»Clicked(widget)
+
 «ENDDEFINE»
 
 «DEFINE HandlerCallbacks(Applet applet, Widget w) FOR ClickedHandler -»
