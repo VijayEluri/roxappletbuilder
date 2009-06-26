@@ -1,0 +1,42 @@
+applet Power {
+	group "de.bughome.python.power"
+}
+
+texts {
+	text exit = "Exit";
+}
+
+images {
+	image Green {
+		file "/home/marook/work/devel/roxappletbuilder/workspaces/test/Power/de/bughome/python/power/res/green.png";
+	}
+	
+	image Performance {
+		file "/home/marook/work/devel/roxappletbuilder/workspaces/test/Power/de/bughome/python/power/res/performance.png";
+	}
+}
+
+model Model {
+	attribute powerMode = "0";
+}
+
+composite Main {
+	menus {
+		menu Context {
+			menu-item Exit {
+				title exit;
+				activated-handler { }
+			}
+		}
+	}	
+
+	button Switch {
+		clicked-handler { }
+		popup-handler { menu Context; }
+		model-change-handler { attribute powerMode; }
+	}
+}
+
+gui {
+	rootComposite Main
+}
