@@ -4,7 +4,6 @@ applet LocaleSwitch {
 
 texts {
 	text context_menu_exit = "Exit";
-	text exit = "Exit";
 }
 
 images {
