@@ -25,8 +25,9 @@ model Model {
 composite Main {
 	menus {
 		menu Context {
-			menu-item {
+			menu-item Exit {
 				title context_menu_exit;
+				activated-handler { }
 			}
 		}
 	}

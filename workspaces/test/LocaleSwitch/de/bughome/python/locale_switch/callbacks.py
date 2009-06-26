@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 import de.bughome.python.locale_switch.images
 import de.bughome.python.locale_switch.models
 
@@ -54,3 +55,6 @@ def onSwitchClicked(widget):
         de.bughome.python.locale_switch.models.model.keyboardLayout = 1
     else:
         de.bughome.python.locale_switch.models.model.keyboardLayout = 0
+
+def onExitClicked(widget):
+    sys.exit(0)
