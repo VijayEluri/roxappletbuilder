@@ -11,7 +11,7 @@ import gtk
 def create«i.name.toFirstUpper()»Image():
     image = gtk.Image()
 «EXPAND ImagePixBufLoad FOR i.source -»
-«IF (i.width != null) -»
+«IF ((i.width != null) && (i.width > 0)) -»
     pixBuf = pixBuf.scale_simple(«i.width», «i.height», gtk.gdk.INTERP_BILINEAR)
 «ENDIF -»
     image.set_from_pixbuf(pixBuf)
