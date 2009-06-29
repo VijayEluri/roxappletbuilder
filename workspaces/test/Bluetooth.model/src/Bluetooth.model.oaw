@@ -1,0 +1,6 @@
+<workflow>
+	<component file='de/bughome/roxappletbuilder/generator.oaw'>
+		<modelFile value='model.rxa' />
+		<targetDir value='..' />
+	</component>
+</workflow>
