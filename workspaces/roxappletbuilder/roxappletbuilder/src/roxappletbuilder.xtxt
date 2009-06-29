@@ -46,7 +46,7 @@ ImageSourceFile:
 	"file" name = STRING ";";
 
 Widget:
-	AbstractMenuItem | Button | HBox | Label | Menu | VBox;
+	AbstractMenuItem | Button | HBox | Label | Menu | ToggleButton | VBox;
 	
 Button:
 	"button" (name = ID)? "{"
@@ -81,6 +81,16 @@ Menu:
 		(menuItems += AbstractMenuItem)*
 	"}";
 	
+ToggleButton:
+	"toggle-button" (name = ID)? "{"
+		("title" title = [Text|ID] ";")?
+		("image" image = [Image|ID] ";")?
+		(handlers += ToggleButtonHandler)*
+	"}";
+	
+ToggleButtonHandler:
+	ClickedHandler | ModelChangeHandler | PopupHandler | ToggledHandler;
+
 VBox:
 	"vbox" (name = ID)? "{"
 		(homogeneous ?= "homogeneous")?
@@ -105,7 +115,8 @@ MenuItemHandler:
 	ActivatedHandler;
 
 Handler:
-	ActivatedHandler | ClickedHandler | ModelChangeHandler | PopupHandler;
+	ActivatedHandler | ClickedHandler | ModelChangeHandler | PopupHandler
+	| ToggledHandler;
 
 ActivatedHandler:
 	"activated-handler" "{" "}";
@@ -121,4 +132,8 @@ ModelChangeHandler:
 PopupHandler:
 	"popup-handler" "{"
 		"menu" menu = [Menu|ID] ";"
+	"}";
+
+ToggledHandler:
+	"toggled-handler" "{"
 	"}";
