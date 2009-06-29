@@ -1,1 +1,45 @@
-// model goes here...
+applet Bluetooth {
+	group "de.bughome.python.bluetooth"
+}
+
+texts {
+	text contextMenuExit = "Exit";
+	text contextMenuDiscoverDevices = "Discover...";
+}
+
+model Model {
+	attribute bluetoothEnabled = "False";
+}
+
+composite DevicesList {
+	vbox {
+		button Refresh {
+			clicked-handler { }
+		}
+	}
+}
+
+composite Main {
+	menus {
+		menu Context {
+			menu-item DiscoverDevices {
+				title contextMenuDiscoverDevices;
+				activated-handler { }
+			}
+			menu-item Exit {
+				title contextMenuExit;
+				activated-handler { }
+			}
+		}
+	}
+
+	toggle-button BluetoothEnabled {
+		toggled-handler { }
+		model-change-handler { attribute bluetoothEnabled; }
+		popup-handler { menu Context; }
+	}
+}
+
+gui {
+	rootComposite Main
+}
