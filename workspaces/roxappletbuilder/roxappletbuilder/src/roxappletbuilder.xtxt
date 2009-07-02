@@ -46,7 +46,8 @@ ImageSourceFile:
 	"file" name = STRING ";";
 
 Widget:
-	AbstractMenuItem | Button | HBox | Label | Menu | ToggleButton | VBox;
+	AbstractMenuItem | Button | DataTable | HBox | Label | Menu | ToggleButton
+	| VBox;
 	
 Button:
 	"button" (name = ID)? "{"
@@ -57,6 +58,23 @@ Button:
 	
 ButtonHandler:
 	ClickedHandler | ModelChangeHandler | PopupHandler;
+
+DataTable:
+	"data-table" (name = ID)? "{"
+		("columns" "{"
+			(columns += DataTableColumn)*
+		"}")?
+	"}";
+	
+DataTableColumn:
+	"column" name = ID "{"
+		"type" columnType = DataTableColumnType ";"
+		("title" title = [Text|ID] ";")?
+	"}";
+	
+Enum DataTableColumnType:
+	TYPE_BOOLEAN = "boolean"| TYPE_DOUBLE = "double" | TYPE_INT = "int"
+	| TYPE_LONG = "long" | TYPE_STRING = "string";
 
 HBox:
 	"hbox" (name = ID)? "{"
@@ -80,7 +98,7 @@ Menu:
 	"menu" name = ID "{"
 		(menuItems += AbstractMenuItem)*
 	"}";
-	
+
 ToggleButton:
 	"toggle-button" (name = ID)? "{"
 		("title" title = [Text|ID] ";")?

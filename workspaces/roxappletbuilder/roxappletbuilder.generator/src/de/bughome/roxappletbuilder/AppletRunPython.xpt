@@ -43,10 +43,12 @@ if(__name__ == '__main__'):
     parser.add_option('-s', '--standalone', dest = 'standAlone', action = 'store_true', help = 'launches the application in standalone mode outside the rox filer panel')
     
     (options, args) = parser.parse_args()
+    
+    rootWidget = «group».main.create«rootComposite.name.toFirstUpper()»Composite().rootWidget
 
     if(options.standAlone):
         w = gtk.Window()
-        w.add(«group».main.«rootComposite.name»().rootWidget)
+        w.add(rootWidget)
         w.show_all()
     
     else:
@@ -55,7 +57,7 @@ if(__name__ == '__main__'):
         logging.debug('Connecting to XID ' + str(xid))
     
         p = gtk.Plug(xid)
-        p.add(«group».main.«rootComposite.name»().rootWidget)
+        p.add(rootWidget)
         p.show_all()
 
     gtk.main()

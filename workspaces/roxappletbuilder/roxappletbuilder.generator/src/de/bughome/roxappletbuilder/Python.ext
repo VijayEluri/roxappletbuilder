@@ -13,7 +13,7 @@ String getWidgetName(roxappletbuilder::Widget w):
 
 String getWidgetVariableName(roxappletbuilder::Widget w):
 	let p = w.metaType.getProperty("name") :
-		((p == null) ? (w.getGenericWidgetName() + getUID(w)) : ((p.get(w) == null) ? (w.getGenericWidgetName() + getUID(w)) : ("self." + p.get(w).toString().toFirstLower()))).toFirstLower();
+		((p == null) ? ("self.__" + w.getGenericWidgetName() + getUID(w)) : ((p.get(w) == null) ? ("self.__" + w.getGenericWidgetName() + getUID(w)) : ("self." + p.get(w).toString().toFirstLower()))).toFirstLower();
 
 String indent(int indention):
 	multiply(" ", indention);
