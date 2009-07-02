@@ -1,0 +1,232 @@
+«IMPORT roxappletbuilder»
+
+«EXTENSION de::bughome::roxappletbuilder::Python»
+
+«DEFINE CompositesPython FOR Applet»
+«FILE name + "/" + group.replaceAll("[.]", "/") + "/composites.py" GEN -»
+import gtk
+import logging
+import «group».images
+
+«FOREACH composites AS c -»
+class «c.name.toFirstUpper()»(object):
+
+«FOREACH c.eAllContents.typeSelect(Widget) AS w -»
+«IF (w.metaType.getProperty("handlers") != null) -»
+«EXPAND HandlerMembers(this,w) FOREACH w.handlers -»
+«ENDIF -»
+«ENDFOREACH -»
+    def __setUpGui(self):
+«FOREACH c.menus AS m -»
+        self.«m.name.toFirstLower()» = gtk.Menu()
+«EXPAND MenuItemSetUp(this, m) FOREACH m.menuItems -»
+«FOREACH m.menuItems AS i -»
+        «i.getWidgetVariableName()».show_all()
+«ENDFOREACH -»
+        
+«ENDFOREACH -»
+«EXPAND WidgetSetUp(8, this) FOR c.rootWidget -»
+        self.rootWidget = «c.rootWidget.getWidgetVariableName()»
+
+    def __init__(self):
+        self.__setUpGui()
+
+«ENDFOREACH -»
+«ENDFILE»
+«ENDDEFINE»
+
+«REM»************************************************************************
+        WidgetClass
+«ENDREM»
+
+«DEFINE WidgetClass FOR Button»gtk.Button«ENDDEFINE»
+«DEFINE WidgetClass FOR DataTable»gtk.TreeView«ENDDEFINE»
+«DEFINE WidgetClass FOR HBox»gtk.HBox«ENDDEFINE»
+«DEFINE WidgetClass FOR Label»gtk.Label«ENDDEFINE»
+«DEFINE WidgetClass FOR ToggleButton»gtk.ToggleButton«ENDDEFINE»
+«DEFINE WidgetClass FOR VBox»gtk.VBox«ENDDEFINE»
+
+«REM»************************************************************************
+        MenuItemSetUp
+«ENDREM»
+
+«DEFINE MenuItemSetUp(Applet applet, Widget parent) FOR AbstractMenuItem -»
+«ERROR "Missing MenuItemSetUp(Applet, Widget) for " + this»
+«ENDDEFINE»
+
+«DEFINE MenuItemSetUp(Applet applet, Widget parent) FOR MenuItem -»
+        «getWidgetVariableName()» = gtk.MenuItem(«IF (title != null)»'«title.defaultValue»'«ENDIF»)
+        «parent.getWidgetVariableName()».append(«getWidgetVariableName()»)
+«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
+«ENDDEFINE»
+
+«REM»************************************************************************
+        WidgetSetUp
+«ENDREM»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR Widget -»
+«ERROR "Missing WidgetSetup(int) for " + this»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR Button -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (image != null) -»
+«indent(indention)»«getWidgetVariableName()».set_image(«applet.group».images.create«image.name.toFirstUpper()»Image())
+«ENDIF -»
+«IF (title != null) -»
+«indent(indention)»«getWidgetVariableName()».set_label('«title.defaultValue»')
+«ENDIF -»
+«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR DataTable -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«indent(indention)»«getWidgetVariableName()»Model = gtk.ListStore(«FOREACH columns AS c SEPARATOR ", "»«EXPAND ColumnType FOR c»«ENDFOREACH»)
+«indent(indention)»«getWidgetVariableName()».set_model(«getWidgetVariableName()»Model)
+«FOREACH columns AS c -»
+«indent(indention)»«getWidgetVariableName()»CellColumn«columns.indexOf(c)» = gtk.CellRendererText()
+«indent(indention)»«getWidgetVariableName()»Column«columns.indexOf(c)» = gtk.TreeViewColumn('«IF c.title != null»«c.title.defaultValue»«ELSE»«c.name»«ENDIF»', «getWidgetVariableName()»CellColumn«columns.indexOf(c)», text=0, foreground=1)
+«indent(indention)»«getWidgetVariableName()».append_column(«getWidgetVariableName()»Column«columns.indexOf(c)»)
+«ENDFOREACH -»
+«ENDDEFINE»
+
+«DEFINE ColumnType FOR DataTableColumn -»
+«IF columnType == DataTableColumnType::TYPE_BOOLEAN -»
+'gboolean'«ELSEIF columnType == DataTableColumnType::TYPE_DOUBLE -»
+'gdouble'«ELSEIF columnType == DataTableColumnType::TYPE_INT -»
+int«ELSEIF columnType == DataTableColumnType::TYPE_LONG -»
+'glong'«ELSEIF columnType == DataTableColumnType::TYPE_STRING -»
+str«ELSE -»
+«ERROR "Unknown column type " + columnType -»
+«ENDIF -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR HBox -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (homogeneous) -»
+«indent(indention)»«getWidgetVariableName()».set_homogeneous(True)
+«ENDIF -»
+«IF (spacing != null) -»
+«indent(indention)»«getWidgetVariableName()».set_spacing(«spacing»)
+«ENDIF -»
+«FOREACH widgets AS w -»
+«EXPAND WidgetSetUp(indention, applet) FOR w -»
+«indent(indention)»«getWidgetVariableName()».add(«w.getWidgetVariableName()»)
+«ENDFOREACH -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR Label -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (angle != null) -»
+«indent(indention)»«getWidgetVariableName()».set_angle(«angle»)
+«ENDIF -»
+«IF (label != null) -»
+«indent(indention)»«getWidgetVariableName()».set_label('«label.defaultValue»')
+«ENDIF -»
+«IF (wrap) -»
+«indent(indention)»«getWidgetVariableName()».set_wrap(True)
+«ENDIF -»
+«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR ToggleButton -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (image != null) -»
+«indent(indention)»«getWidgetVariableName()».set_image(«applet.group».images.create«image.name.toFirstUpper()»Image())
+«ENDIF -»
+«IF (title != null) -»
+«indent(indention)»«getWidgetVariableName()».set_label('«title.defaultValue»')
+«ENDIF -»
+«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR VBox -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«IF (homogeneous) -»
+«indent(indention)»«getWidgetVariableName()».set_homogeneous(True)
+«ENDIF -»
+«IF (spacing != null) -»
+«indent(indention)»«getWidgetVariableName()».set_spacing(«spacing»)
+«ENDIF -»
+«FOREACH widgets AS w -»
+«EXPAND WidgetSetUp(indention, applet) FOR w -»
+«indent(indention)»«getWidgetVariableName()».add(«w.getWidgetVariableName()»)
+«ENDFOREACH -»
+«ENDDEFINE»
+
+«REM»************************************************************************
+        HandlerMembers
+«ENDREM»
+
+«DEFINE CallpackPropertyHandlerMembers(Applet applet, Widget w, String signalName, String callbackName) FOR Handler -»
+    def __set«w.getWidgetName().toFirstUpper()»«callbackName.toFirstUpper()»Callback(self, callback):
+        «w.getWidgetVariableName()».connect('«signalName»', callback)
+        
+    «w.getWidgetName().toFirstLower()»«callbackName.toFirstUpper()»Callback = property(None, __set«w.getWidgetName().toFirstUpper()»«callbackName.toFirstUpper()»Callback)
+
+«ENDDEFINE»
+
+«DEFINE HandlerMembers(Applet applet, Widget w) FOR Object -»
+«ERROR "Missing HandlerMembers(Applet, Widget) for " + this -»
+«ENDDEFINE»
+
+«DEFINE HandlerMembers(Applet applet, Widget w) FOR ActivatedHandler -»
+«EXPAND CallpackPropertyHandlerMembers(applet, w, "activate", "activate") FOR this -»
+«ENDDEFINE»
+
+«DEFINE HandlerMembers(Applet applet, Widget w) FOR ClickedHandler -»
+«EXPAND CallpackPropertyHandlerMembers(applet, w, "clicked", "clicked") FOR this -»
+«ENDDEFINE»
+
+«DEFINE HandlerMembers(Applet applet, Widget w) FOR PopupHandler -»
+    def __«w.getWidgetName().toFirstLower()»PopupCallback(self, widget, event):
+        if((event.type == gtk.gdk.BUTTON_PRESS) and (event.button == 3)):
+            widget.popup(None, None, None, event.button, event.time)
+            
+            return True
+            
+        return False
+
+«ENDDEFINE»
+
+«DEFINE HandlerMembers(Applet applet, Widget w) FOR ModelChangeHandler -»
+«ENDDEFINE»
+
+«DEFINE HandlerMembers(Applet applet, Widget w) FOR ToggledHandler -»
+«EXPAND CallpackPropertyHandlerMembers(applet, w, "toggled", "Toggled") FOR this -»
+«ENDDEFINE»
+
+«REM»************************************************************************
+        HandlerSetUp
+«ENDREM»
+
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR Object -»
+«ERROR "Missing HandlerSetUp for " + this»
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ActivatedHandler -»
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ClickedHandler -»
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR PopupHandler -»
+«indent(indention)»def __«w.getWidgetName().toFirstLower()»PopupCallback(self, widget, event):
+«indent(indention)»    if((event.type == gtk.gdk.BUTTON_PRESS) and (event.button == 3)):
+«indent(indention)»        widget.popup(None, None, None, event.button, event.time)
+«indent(indention)»        return True
+«indent(indention)»    return False
+«indent(indention)»«w.getWidgetVariableName()».connect_object("button-press-event", self.__«w.getWidgetName().toFirstLower()»PopupCallback, «menu.getWidgetVariableName()»)
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ModelChangeHandler -»
+«FOREACH attributes AS a -»
+«indent(indention)»self.«w.getWidgetName().toFirstLower()»UpdateCallback = None
+«indent(indention)»def __«a.name.toFirstLower()»ChangeListener(model, oldValue, newValue):
+«indent(indention)»    if(self.«w.getWidgetName().toFirstLower()»UpdateCallback == None):
+«indent(indention)»        logging.warn("Unbound model change listener for widget «w.getWidgetName()» and «a.eContainer.name» model's attribute «a.name»")
+«indent(indention)»    else:
+«indent(indention)»        self.«w.getWidgetName().toFirstLower()»UpdateCallback(«w.getWidgetVariableName()», model, oldValue, newValue)
+«indent(indention)»«applet.group».models.«a.eContainer.name.toFirstLower()».«a.name.toFirstLower()»ChangeListeners.append(__«a.name.toFirstLower()»ChangeListener)
+«ENDFOREACH -»
+«ENDDEFINE»
