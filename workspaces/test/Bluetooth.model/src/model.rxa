@@ -5,15 +5,31 @@ applet Bluetooth {
 texts {
 	text contextMenuExit = "Exit";
 	text contextMenuDiscoverDevices = "Discover...";
+	text devicesListScan = "Scan";
 }
 
 model Model {
 	attribute bluetoothEnabled = "False";
+	attribute visibleDevices = "[]";
 }
 
 composite DevicesList {
 	vbox {
+		data-table Devices {
+			columns {
+				column Name {
+					type string;
+				}
+				column MacAddress {
+					type string;
+				}
+			}
+			model-change-handler {
+				attribute visibleDevices;
+			}
+		}
 		button Refresh {
+			title devicesListScan;
 			clicked-handler { }
 		}
 	}
