@@ -64,6 +64,7 @@ DataTable:
 		("columns" "{"
 			(columns += DataTableColumn)*
 		"}")?
+		(handlers += DataTableHandler)*
 	"}";
 	
 DataTableColumn:
@@ -71,6 +72,9 @@ DataTableColumn:
 		"type" columnType = DataTableColumnType ";"
 		("title" title = [Text|ID] ";")?
 	"}";
+
+DataTableHandler:
+	ModelChangeHandler;
 	
 Enum DataTableColumnType:
 	TYPE_BOOLEAN = "boolean"| TYPE_DOUBLE = "double" | TYPE_INT = "int"

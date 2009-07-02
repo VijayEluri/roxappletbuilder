@@ -76,7 +76,7 @@ class «c.name.toFirstUpper()»(object):
 «IF (title != null) -»
 «indent(indention)»«getWidgetVariableName()».set_label('«title.defaultValue»')
 «ENDIF -»
-«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
+«EXPAND HandlerSetUp(indention, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR DataTable -»
@@ -88,6 +88,7 @@ class «c.name.toFirstUpper()»(object):
 «indent(indention)»«getWidgetVariableName()»Column«columns.indexOf(c)» = gtk.TreeViewColumn('«IF c.title != null»«c.title.defaultValue»«ELSE»«c.name»«ENDIF»', «getWidgetVariableName()»CellColumn«columns.indexOf(c)», text=0, foreground=1)
 «indent(indention)»«getWidgetVariableName()».append_column(«getWidgetVariableName()»Column«columns.indexOf(c)»)
 «ENDFOREACH -»
+«EXPAND HandlerSetUp(indention, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «DEFINE ColumnType FOR DataTableColumn -»
@@ -126,7 +127,7 @@ str«ELSE -»
 «IF (wrap) -»
 «indent(indention)»«getWidgetVariableName()».set_wrap(True)
 «ENDIF -»
-«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
+«EXPAND HandlerSetUp(indention, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR ToggleButton -»
@@ -137,7 +138,7 @@ str«ELSE -»
 «IF (title != null) -»
 «indent(indention)»«getWidgetVariableName()».set_label('«title.defaultValue»')
 «ENDIF -»
-«EXPAND HandlerSetUp(8, applet, this) FOREACH handlers -»
+«EXPAND HandlerSetUp(indention, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR VBox -»
