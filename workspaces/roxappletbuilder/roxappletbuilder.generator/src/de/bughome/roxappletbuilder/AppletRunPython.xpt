@@ -10,6 +10,8 @@ import gtk
 import logging
 import optparse
 import sys
+
+import «group».composites
 import «group».main
 
 def setUpLogging():
@@ -41,21 +43,35 @@ if(__name__ == '__main__'):
     
     parser = optparse.OptionParser()
     parser.add_option('-s', '--standalone', dest = 'standAlone', action = 'store_true', help = 'launches the application in standalone mode outside the rox filer panel')
+    parser.add_option('-p', '--preview', dest = 'preview', action = 'store_true', help = 'shows a preview of all windows when in standalone mode')
     
     (options, args) = parser.parse_args()
     
-    rootWidget = «group».main.create«rootComposite.name.toFirstUpper()»Composite().rootWidget
+    
 
     if(options.standAlone):
-        w = gtk.Window()
-        w.add(rootWidget)
-        w.show_all()
+        if(options.preview):
+«FOREACH composites AS c -»
+            «c.name.toFirstLower()»Composite = «group».composites.«c.name.toFirstUpper()»()
+            «c.name.toFirstLower()»Window = gtk.Window()
+            «c.name.toFirstLower()»Window.set_title('«c.name» preview')
+            «c.name.toFirstLower()»Window.add(«c.name.toFirstLower()»Composite.rootWidget)
+            «c.name.toFirstLower()»Window.show_all()
+«ENDFOREACH -»
+        else:
+            rootWidget = «group».main.create«rootComposite.name.toFirstUpper()»Composite().rootWidget
+            w = gtk.Window()
+            w.set_title('«name»')
+            w.add(rootWidget)
+            w.show_all()
     
     else:
         xid = int(args[0])
     
         logging.debug('Connecting to XID ' + str(xid))
     
+        rootWidget = «group».main.create«rootComposite.name.toFirstUpper()»Composite().rootWidget
+        
         p = gtk.Plug(xid)
         p.add(rootWidget)
         p.show_all()

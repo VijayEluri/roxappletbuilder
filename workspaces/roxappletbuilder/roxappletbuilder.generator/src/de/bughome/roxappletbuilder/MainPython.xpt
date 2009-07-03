@@ -6,7 +6,9 @@
 «FILE name + "/" + group.replaceAll("[.]", "/") + "/main.py" GEN -»
 import gtk
 import logging
-import «group».callbacks
+«FOREACH composites AS c -»
+import «group».«c.name.toLowerCase()»_callbacks
+«ENDFOREACH -»
 import «group».composites
 import «group».models
 
@@ -15,7 +17,7 @@ def create«c.name.toFirstUpper()»Composite():
     composite = «group».composites.«c.name.toFirstUpper()»()
 «FOREACH c.eAllContents.typeSelect(Widget) AS w -»
 «IF (w.metaType.getProperty("handlers") != null) -»
-«EXPAND HandlerSetUp(this, w) FOREACH w.handlers -»
+«EXPAND HandlerSetUp(this, c, w) FOREACH w.handlers -»
 «ENDIF -»
 «ENDFOREACH -»
     return composite
@@ -28,29 +30,29 @@ def create«c.name.toFirstUpper()»Composite():
         HandlerSetUp
 «ENDREM»
 
-«DEFINE GenericCallbackPropertySetter(Applet applet, Widget w, String callbackName) FOR Handler -»
-    composite.«w.getWidgetName().toFirstLower()»«callbackName.toFirstUpper()»Callback = «applet.group».callbacks.«w.getWidgetName().toFirstLower()»«callbackName.toFirstUpper()»Callback
+«DEFINE GenericCallbackPropertySetter(Applet applet, Composite c, Widget w, String callbackName) FOR Handler -»
+    composite.«w.getWidgetName().toFirstLower()»«callbackName.toFirstUpper()»Callback = «applet.group».«c.name.toLowerCase()»_callbacks.«w.getWidgetName().toFirstLower()»«callbackName.toFirstUpper()»Callback
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(Applet applet, Widget w) FOR Object -»
+«DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR Object -»
 «ERROR "Missing HandlerSetUp(Applet, Widget) for " + this -»
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(Applet applet, Widget w) FOR ActivatedHandler -»
-«EXPAND GenericCallbackPropertySetter(applet, w, "activate") FOR this -»
+«DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR ActivatedHandler -»
+«EXPAND GenericCallbackPropertySetter(applet, c, w, "activate") FOR this -»
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(Applet applet, Widget w) FOR ClickedHandler -»
-«EXPAND GenericCallbackPropertySetter(applet, w, "clicked") FOR this -»
+«DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR ClickedHandler -»
+«EXPAND GenericCallbackPropertySetter(applet, c, w, "clicked") FOR this -»
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(Applet applet, Widget w) FOR PopupHandler -»
+«DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR PopupHandler -»
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(Applet applet, Widget w) FOR ModelChangeHandler -»
-«EXPAND GenericCallbackPropertySetter(applet, w, "update") FOR this -»
+«DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR ModelChangeHandler -»
+«EXPAND GenericCallbackPropertySetter(applet, c, w, "update") FOR this -»
 «ENDDEFINE»
 
-«DEFINE HandlerSetUp(Applet applet, Widget w) FOR ToggledHandler -»
-«EXPAND GenericCallbackPropertySetter(applet, w, "toggled") FOR this -»
+«DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR ToggledHandler -»
+«EXPAND GenericCallbackPropertySetter(applet, c, w, "toggled") FOR this -»
 «ENDDEFINE»

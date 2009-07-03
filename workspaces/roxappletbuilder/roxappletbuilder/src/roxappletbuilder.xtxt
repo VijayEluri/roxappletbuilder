@@ -74,7 +74,7 @@ DataTableColumn:
 	"}";
 
 DataTableHandler:
-	ModelChangeHandler;
+	ModelChangeHandler | PopupHandler;
 	
 Enum DataTableColumnType:
 	TYPE_BOOLEAN = "boolean"| TYPE_DOUBLE = "double" | TYPE_INT = "int"

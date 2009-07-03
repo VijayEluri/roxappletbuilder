@@ -3,7 +3,9 @@
 «EXTENSION de::bughome::roxappletbuilder::Python»
 
 «DEFINE CallbacksPython FOR Applet»
-«FILE name + "/" + group.replaceAll("[.]", "/") + "/callbacks.py" EDIT -»
+«FOREACH composites AS c»
+«FILE name + "/" + group.replaceAll("[.]", "/") + "/" + c.name.toLowerCase() + "_callbacks.py" EDIT -»
 # implement your custom callback methods here
 «ENDFILE»
+«ENDFOREACH»
 «ENDDEFINE»
