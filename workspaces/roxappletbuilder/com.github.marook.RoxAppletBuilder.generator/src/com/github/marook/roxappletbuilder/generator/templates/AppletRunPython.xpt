@@ -1,0 +1,101 @@
+«REM»
+ * Copyright 2009 Markus Pielmeier
+ *
+ * This file is part of rox applet builder.
+ *
+ * rox applet builder is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * rox applet builder is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with rox applet builder.  If not, see <http://www.gnu.org/licenses/>.
+«ENDREM»
+
+«IMPORT roxAppletBuilderDsl»
+
+«EXTENSION com::github::marook::roxappletbuilder::generator::templates::Python»
+
+«DEFINE AppletRunPython FOR Applet»
+«FILE name + "/AppletRun" GEN -»
+#!/usr/bin/env python
+
+import gtk
+import logging
+import optparse
+import sys
+
+import «group».composites
+import «group».main
+
+def setUpLogging():
+    def tagExceptionCallback(eType, eValue, eTraceBack):
+        import cgitb
+
+        txt = cgitb.text((eType, eValue, eTraceBack))
+
+        logging.fatal(txt)
+    
+        sys.exit(1)
+
+	# configure file logger
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s', filename='/tmp/«name».log', filemode='a')
+    
+    # configure console logger
+    consoleHandler = logging.StreamHandler(sys.stdout)
+    consoleHandler.setLevel(logging.DEBUG)
+    
+    consoleFormatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    consoleHandler.setFormatter(consoleFormatter)
+    logging.getLogger().addHandler(consoleHandler)
+
+    # replace default exception handler
+    sys.excepthook = tagExceptionCallback
+
+if(__name__ == '__main__'):
+    setUpLogging()
+    
+    parser = optparse.OptionParser()
+    parser.add_option('-s', '--standalone', dest = 'standAlone', action = 'store_true', help = 'launches the application in standalone mode outside the rox filer panel')
+    parser.add_option('-p', '--preview', dest = 'preview', action = 'store_true', help = 'shows a preview of all windows when in standalone mode')
+    
+    (options, args) = parser.parse_args()
+    
+    
+
+    if(options.standAlone):
+        if(options.preview):
+«FOREACH composites AS c -»
+            «c.name.toFirstLower()»Composite = «group».composites.«c.name.toFirstUpper()»()
+            «c.name.toFirstLower()»Window = gtk.Window()
+            «c.name.toFirstLower()»Window.set_title('«c.name» preview')
+            «c.name.toFirstLower()»Window.add(«c.name.toFirstLower()»Composite.rootWidget)
+            «c.name.toFirstLower()»Window.show_all()
+«ENDFOREACH -»
+        else:
+            rootWidget = «group».main.create«rootComposite.name.toFirstUpper()»Composite().rootWidget
+            w = gtk.Window()
+            w.set_title('«name»')
+            w.add(rootWidget)
+            w.show_all()
+    
+    else:
+        xid = int(args[0])
+    
+        logging.debug('Connecting to XID ' + str(xid))
+    
+        rootWidget = «group».main.create«rootComposite.name.toFirstUpper()»Composite().rootWidget
+        
+        p = gtk.Plug(xid)
+        p.add(rootWidget)
+        p.show_all()
+
+    gtk.main()
+
+«ENDFILE»
+«ENDDEFINE»

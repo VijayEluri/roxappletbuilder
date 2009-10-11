@@ -1,0 +1,42 @@
+/*
+ * Copyright 2009 Markus Pielmeier
+ *
+ * This file is part of rox applet builder.
+ *
+ * rox applet builder is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * rox applet builder is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with rox applet builder.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+String getUID(Object o):
+	JAVA com.github.marook.roxappletbuilder.generator.templates.PythonUtil.getUID(java.lang.Object);
+	
+String multiply(String s, Integer factor):
+	JAVA com.github.marook.roxappletbuilder.generator.templates.PythonUtil.multiply(java.lang.String, java.lang.Long);
+
+String getGenericWidgetName(roxAppletBuilderDsl::Widget w):
+	w.metaType.name.replaceAll(".*::", "");
+
+String getWidgetName(roxAppletBuilderDsl::Widget w):
+	let p = w.metaType.getProperty("name") :
+		(p == null) ? w.getGenericWidgetName() : ((p.get(w) == null) ? w.getGenericWidgetName() : p.get(w));
+
+String getWidgetVariableName(roxAppletBuilderDsl::Widget w):
+	let p = w.metaType.getProperty("name") :
+		((p == null) ? ("self.__" + w.getGenericWidgetName() + getUID(w)) : ((p.get(w) == null) ? ("self.__" + w.getGenericWidgetName() + getUID(w)) : ("self." + p.get(w).toString().toFirstLower()))).toFirstLower();
+
+String indent(int indention):
+	multiply(" ", indention);
+
+List getPackages(String package):
+	JAVA com.github.marook.roxappletbuilder.generator.templates.PythonUtil.getPackages(java.lang.String);

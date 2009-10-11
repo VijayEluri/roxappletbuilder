@@ -1,0 +1,30 @@
+«REM»
+ * Copyright 2009 Markus Pielmeier
+ *
+ * This file is part of rox applet builder.
+ *
+ * rox applet builder is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * rox applet builder is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with rox applet builder.  If not, see <http://www.gnu.org/licenses/>.
+«ENDREM»
+
+«IMPORT roxAppletBuilderDsl»
+
+«EXTENSION com::github::marook::roxappletbuilder::generator::templates::Python»
+
+«DEFINE PackagePython(String basePath, String package) FOR Object»
+«FOREACH getPackages(package) AS p»
+«FILE basePath + "/" + p.replaceAll("[.]", "/") + "/__init__.py" GEN -»
+«ENDFILE»
+«ENDFOREACH»
+«ENDDEFINE»
+
