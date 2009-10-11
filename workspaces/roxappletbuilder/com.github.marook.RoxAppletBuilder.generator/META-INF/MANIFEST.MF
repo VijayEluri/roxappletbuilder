@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: com.github.marook.RoxAppletBuilder.generator
 Bundle-Vendor: My Company
-Bundle-Version: 1.0.0
+Bundle-Version: 1.1.0
 Bundle-SymbolicName: com.github.marook.roxappletbuilder.generator; singleton:=true
 Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
 Bundle-ActivationPolicy: lazy
