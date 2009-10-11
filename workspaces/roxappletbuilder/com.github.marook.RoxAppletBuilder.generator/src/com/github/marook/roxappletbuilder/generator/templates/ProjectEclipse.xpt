@@ -19,27 +19,26 @@
 
 «IMPORT roxAppletBuilderDsl»
 
-«IMPORT com::github::marook::roxappletbuilder::generator»
+«EXTENSION com::github::marook::roxappletbuilder::generator::templates::Python»
 
-«REM»
-   This is the 'main' template. 
-   You should replace the type 'Object' with your respective meta type.
-«ENDREM»
-«DEFINE main FOR Object»
-	«EXPAND Applet FOR this»
-«ENDDEFINE»
-
-«DEFINE Applet FOR Object»
-	«ERROR "Can't extract Applet for " + this»
-«ENDDEFINE»
-
-«DEFINE Applet FOR Applet»
-	«EXPAND AppletRunPython::AppletRunPython FOR this»
-	«EXPAND CallbacksPython::CallbacksPython FOR this»
-	«EXPAND CompositesPython::CompositesPython FOR this»
-	«EXPAND ImagesPython::ImagesPython FOR this»
-	«EXPAND MainPython::MainPython FOR this»
-	«EXPAND ModelsPython::ModelsPython FOR this»
-	«EXPAND ProjectEclipse::ProjectEclipse FOR this»
-	«EXPAND PyDevProjectEclipse::PyDevProjectEclipse FOR this»
+«DEFINE ProjectEclipse FOR Applet»
+«FILE name + "/.project" GEN -»
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>«name»</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.python.pydev.PyDevBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.python.pydev.pythonNature</nature>
+	</natures>
+</projectDescription>
+«ENDFILE»
 «ENDDEFINE»
