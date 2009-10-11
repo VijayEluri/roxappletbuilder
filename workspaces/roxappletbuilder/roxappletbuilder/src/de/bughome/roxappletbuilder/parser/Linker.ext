@@ -1,8 +1,0 @@
-
-extension de::bughome::roxappletbuilder::Extensions;
-extension de::bughome::roxappletbuilder::parser::GenLinker reexport;
-
-/*
- * If you need more sophisticated linker semantic just overwrite the linker extensions here and add your own logic.
- * Have a look at the generated de::bughome::roxappletbuilder::parser::GenLinker (typically located in src-gen)
- */
