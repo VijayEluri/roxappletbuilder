@@ -1,0 +1,47 @@
+/*
+ * Copyright 2009 Markus Pielmeier
+ *
+ * This file is part of rox applet builder.
+ *
+ * rox applet builder is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * rox applet builder is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with rox applet builder.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+applet Switch {
+	group "switch"
+}
+
+texts {
+	text context_menu_exit = "Exit";
+}
+
+composite Main {
+	menus {
+		menu Context {
+			menu-item Exit {
+				title context_menu_exit;
+				activated-handler { }
+			}
+		}
+	}
+
+	entry CommandLine {
+		changed-handler {
+		}
+		popup-handler { menu Context; }
+	}
+}
+
+gui {
+	rootComposite Main
+}

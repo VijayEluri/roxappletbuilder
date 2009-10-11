@@ -60,6 +60,7 @@ class «c.name.toFirstUpper()»(object):
 
 «DEFINE WidgetClass FOR Button»gtk.Button«ENDDEFINE»
 «DEFINE WidgetClass FOR DataTable»gtk.TreeView«ENDDEFINE»
+«DEFINE WidgetClass FOR Entry»gtk.Entry«ENDDEFINE»
 «DEFINE WidgetClass FOR HBox»gtk.HBox«ENDDEFINE»
 «DEFINE WidgetClass FOR Label»gtk.Label«ENDDEFINE»
 «DEFINE WidgetClass FOR ToggleButton»gtk.ToggleButton«ENDDEFINE»
@@ -119,6 +120,11 @@ int«ELSEIF columnType == DataTableColumnType::TYPE_LONG -»
 str«ELSE -»
 «ERROR "Unknown column type " + columnType -»
 «ENDIF -»
+«ENDDEFINE»
+
+«DEFINE WidgetSetUp(int indention, Applet applet) FOR Entry -»
+«indent(indention)»«getWidgetVariableName()» = «EXPAND WidgetClass FOR this»()
+«EXPAND HandlerSetUp(indention, applet, this) FOREACH handlers -»
 «ENDDEFINE»
 
 «DEFINE WidgetSetUp(int indention, Applet applet) FOR HBox -»
@@ -194,6 +200,10 @@ str«ELSE -»
 «EXPAND CallpackPropertyHandlerMembers(applet, w, "activate", "activate") FOR this -»
 «ENDDEFINE»
 
+«DEFINE HandlerMembers(Applet applet, Widget w) FOR ChangedHandler -»
+«EXPAND CallpackPropertyHandlerMembers(applet, w, "changed", "changed") FOR this -»
+«ENDDEFINE»
+
 «DEFINE HandlerMembers(Applet applet, Widget w) FOR ClickedHandler -»
 «EXPAND CallpackPropertyHandlerMembers(applet, w, "clicked", "clicked") FOR this -»
 «ENDDEFINE»
@@ -225,6 +235,9 @@ str«ELSE -»
 «ENDDEFINE»
 
 «DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ActivatedHandler -»
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ChangedHandler -»
 «ENDDEFINE»
 
 «DEFINE HandlerSetUp(int indention, Applet applet, Widget w) FOR ClickedHandler -»

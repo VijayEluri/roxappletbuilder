@@ -54,11 +54,15 @@ def create«c.name.toFirstUpper()»Composite():
 «ENDDEFINE»
 
 «DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR Object -»
-«ERROR "Missing HandlerSetUp(Applet, Widget) for " + this -»
+«ERROR "Missing HandlerSetUp(Applet, Composite, Widget) for " + this -»
 «ENDDEFINE»
 
 «DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR ActivatedHandler -»
 «EXPAND GenericCallbackPropertySetter(applet, c, w, "activate") FOR this -»
+«ENDDEFINE»
+
+«DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR ChangedHandler -»
+«EXPAND GenericCallbackPropertySetter(applet, c, w, "changed") FOR this -»
 «ENDDEFINE»
 
 «DEFINE HandlerSetUp(Applet applet, Composite c, Widget w) FOR ClickedHandler -»

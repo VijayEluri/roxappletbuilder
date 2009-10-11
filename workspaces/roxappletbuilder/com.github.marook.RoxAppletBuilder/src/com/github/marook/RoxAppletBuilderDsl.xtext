@@ -73,8 +73,8 @@ ImageSourceFile:
 	"file" name = STRING ";";
 
 Widget:
-	AbstractMenuItem | Button | DataTable | HBox | Label | Menu | ToggleButton
-	| VBox;
+	AbstractMenuItem | Button | DataTable | Entry | HBox | Label | Menu
+	| ToggleButton | VBox;
 	
 Button:
 	"button" (name = ID)? "{"
@@ -107,6 +107,14 @@ enum DataTableColumnType:
 	TYPE_BOOLEAN = "boolean"| TYPE_DOUBLE = "double" | TYPE_INT = "int"
 	| TYPE_LONG = "long" | TYPE_STRING = "string";
 
+Entry:
+	"entry" (name = ID)? "{"
+		(handlers += EntryHandler)*
+	"}";
+	
+EntryHandler:
+	ChangedHandler | ModelChangeHandler | PopupHandler;
+	
 HBox:
 	"hbox" (name = ID)? "{"
 		(homogeneous ?= "homogeneous")?
@@ -164,13 +172,19 @@ MenuItemHandler:
 	ActivatedHandler;
 
 Handler:
-	ActivatedHandler | ClickedHandler | ModelChangeHandler | PopupHandler
-	| ToggledHandler;
+	ActivatedHandler | ChangedHandler | ClickedHandler | ModelChangeHandler
+	| PopupHandler | ToggledHandler;
 
 ActivatedHandler:
+	{ActivatedHandler}
 	"activated-handler" "{" "}";
 
+ChangedHandler:
+	{ChangedHandler}
+	"changed-handler" "{" "}";
+
 ClickedHandler:
+	{ClickedHandler}
 	"clicked-handler" "{" "}";
 
 ModelChangeHandler:
@@ -184,5 +198,6 @@ PopupHandler:
 	"}";
 
 ToggledHandler:
+	{ToggleHandler}
 	"toggled-handler" "{"
 	"}";
