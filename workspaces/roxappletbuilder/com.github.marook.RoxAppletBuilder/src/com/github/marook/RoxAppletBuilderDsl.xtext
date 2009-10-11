@@ -1,0 +1,188 @@
+/*
+ * Copyright 2009 Markus Pielmeier
+ *
+ * This file is part of rox applet builder.
+ *
+ * rox applet builder is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * rox applet builder is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with rox applet builder.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+grammar com.github.marook.RoxAppletBuilderDsl with org.eclipse.xtext.common.Terminals
+
+generate roxAppletBuilderDsl "http://www.github.com/marook/RoxAppletBuilderDsl"
+
+Applet:
+	(imports += Import)*
+	"applet" name = ID "{"
+		"group" group = STRING
+	"}"
+	("texts" "{"
+		(texts += Text)*
+	"}")?
+	("images" "{"
+		(images += Image)*
+	"}")?
+	(models += Model)*
+	(composites += Composite)*
+	"gui" "{"
+		"rootComposite" rootComposite = [Composite|ID]
+	"}";
+	
+Import:
+	'import' importURI = STRING;
+	
+Text:
+	"text" name = ID "=" defaultValue = STRING ";";
+
+Model:
+	"model" name = ID "{"
+		(attributes += ModelAttribute)*
+	"}";
+
+ModelAttribute:
+	"attribute" name = ID "=" defaultValue = STRING ";";
+
+Composite:
+	"composite" name = ID "{"
+		("menus" "{"
+			(menus += Menu)*
+		"}")?
+		rootWidget = Widget
+	"}";
+
+Image:
+	"image" name = ID "{"
+		source = ImageSource
+		("resize" width = INT "," height = INT ";")? 
+	"}";
+	
+ImageSource:
+	ImageSourceFile;
+	
+ImageSourceFile:
+	"file" name = STRING ";";
+
+Widget:
+	AbstractMenuItem | Button | DataTable | HBox | Label | Menu | ToggleButton
+	| VBox;
+	
+Button:
+	"button" (name = ID)? "{"
+		("title" title = [Text|ID] ";")?
+		("image" image = [Image|ID] ";")?
+		(handlers += ButtonHandler)*
+	"}";
+	
+ButtonHandler:
+	ClickedHandler | ModelChangeHandler | PopupHandler;
+
+DataTable:
+	"data-table" (name = ID)? "{"
+		("columns" "{"
+			(columns += DataTableColumn)*
+		"}")?
+		(handlers += DataTableHandler)*
+	"}";
+	
+DataTableColumn:
+	"column" name = ID "{"
+		"type" columnType = DataTableColumnType ";"
+		("title" title = [Text|ID] ";")?
+	"}";
+
+DataTableHandler:
+	ModelChangeHandler | PopupHandler;
+	
+enum DataTableColumnType:
+	TYPE_BOOLEAN = "boolean"| TYPE_DOUBLE = "double" | TYPE_INT = "int"
+	| TYPE_LONG = "long" | TYPE_STRING = "string";
+
+HBox:
+	"hbox" (name = ID)? "{"
+		(homogeneous ?= "homogeneous")?
+		("spacing" spacing = INT ";")?
+		(widgets += Widget)*
+	"}";
+	
+Label:
+	"label" (name = ID)? "{"
+		(wrap ?= "wrap")?
+		("angle" angle = INT ";")?
+		("label" label = [Text|ID] ";")?
+		(handlers += LabelHandler)*
+	"}";
+	
+LabelHandler:
+	ClickedHandler | ModelChangeHandler | PopupHandler;
+
+Menu:
+	"menu" name = ID "{"
+		(menuItems += AbstractMenuItem)*
+	"}";
+
+ToggleButton:
+	"toggle-button" (name = ID)? "{"
+		("title" title = [Text|ID] ";")?
+		("image" image = [Image|ID] ";")?
+		(handlers += ToggleButtonHandler)*
+	"}";
+	
+ToggleButtonHandler:
+	ClickedHandler | ModelChangeHandler | PopupHandler | ToggledHandler;
+
+VBox:
+	"vbox" (name = ID)? "{"
+		(homogeneous ?= "homogeneous")?
+		("spacing" spacing = INT ";")?
+		(widgets += Widget)*
+	"}";
+	
+AbstractMenuItem:
+	ImageMenuItem | MenuItem;
+
+ImageMenuItem:
+	"image-menu-item" (name = ID)? "{"
+	"}";
+	
+MenuItem:
+	"menu-item" (name = ID)? "{"
+		("title" title = [Text|ID] ";")?
+		(handlers += MenuItemHandler)*
+	"}";
+	
+MenuItemHandler:
+	ActivatedHandler;
+
+Handler:
+	ActivatedHandler | ClickedHandler | ModelChangeHandler | PopupHandler
+	| ToggledHandler;
+
+ActivatedHandler:
+	"activated-handler" "{" "}";
+
+ClickedHandler:
+	"clicked-handler" "{" "}";
+
+ModelChangeHandler:
+	"model-change-handler" "{"
+		("attribute" attributes += [ModelAttribute|ID] ";")*
+	"}";
+
+PopupHandler:
+	"popup-handler" "{"
+		"menu" menu = [Menu|ID] ";"
+	"}";
+
+ToggledHandler:
+	"toggled-handler" "{"
+	"}";
